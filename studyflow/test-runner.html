@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>StudyFlow - Automated Flow & Unit Test Suite</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    h1 { color: #a855f7; margin-bottom: 0.5rem; }
+    .summary-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 1.25rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 2rem;
+    }
+    .stat { display: flex; flex-direction: column; }
+    .stat-val { font-size: 1.8rem; font-weight: bold; }
+    .passed { color: #10b981; }
+    .failed { color: #f43f5e; }
+    .test-item {
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #1e293b;
+      border-left: 5px solid #64748b;
+    }
+    .test-item.pass { border-left-color: #10b981; }
+    .test-item.fail { border-left-color: #f43f5e; background: #331520; }
+    .test-title { font-weight: 600; }
+    .test-error { color: #f43f5e; font-size: 0.85rem; margin-top: 0.25rem; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <h1>⚡ StudyFlow Automated Test Runner</h1>
+  <p>Verifying all core requirements, state operations, timers, validations, and import/export flows.</p>
+
+  <div class="summary-card">
+    <div class="stat"><span class="stat-val passed" id="passCount">0</span><span>Passed</span></div>
+    <div class="stat"><span class="stat-val failed" id="failCount">0</span><span>Failed</span></div>
+    <div class="stat"><span class="stat-val" id="totalCount">0</span><span>Total Tests</span></div>
+  </div>
+
+  <div id="testResults"></div>
+
+  <!-- Load App scripts -->
+  <script src="js/state.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/analytics.js"></script>
+
+  <script>
+    const resultsContainer = document.getElementById('testResults');
+    let passed = 0;
+    let failed = 0;
+
+    function assert(description, testFn) {
+      const item = document.createElement('div');
+      item.className = 'test-item';
+
+      try {
+        testFn();
+        passed++;
+        item.classList.add('pass');
+        item.innerHTML = `<span class="test-title">✅ ${description}</span><span class="passed">PASS</span>`;
+      } catch (err) {
+        failed++;
+        item.classList.add('fail');
+        item.innerHTML = `
+          <div>
+            <div class="test-title">❌ ${description}</div>
+            <div class="test-error">${err.message}</div>
+          </div>
+          <span class="failed">FAIL</span>
+        `;
+        console.error(err);
+      }
+
+      resultsContainer.appendChild(item);
+      document.getElementById('passCount').textContent = passed;
+      document.getElementById('failCount').textContent = failed;
+      document.getElementById('totalCount').textContent = passed + failed;
+    }
+
+    // Run tests
+    window.addEventListener('DOMContentLoaded', () => {
+      const state = window.StudyFlowState;
+
+      // Reset clean for tests
+      state.resetAllData();
+
+      // TEST 1: Initial state structure
+      assert('Initial state has required arrays and version', () => {
+        const s = state.getState();
+        if (!Array.isArray(s.subjects)) throw new Error('subjects is not an array');
+        if (!Array.isArray(s.tasks)) throw new Error('tasks is not an array');
+        if (!Array.isArray(s.exams)) throw new Error('exams is not an array');
+        if (!Array.isArray(s.sessions)) throw new Error('sessions is not an array');
+        if (!Array.isArray(s.focusLogs)) throw new Error('focusLogs is not an array');
+      });
+
+      // TEST 2: Add Subject
+      assert('Add Subject with name, description, color, code', () => {
+        const subj = state.addSubject({
+          name: 'Computer Science',
+          code: 'CS 101',
+          description: 'Introduction to Algorithms',
+          color: '#8b5cf6'
+        });
+        if (!subj.id || subj.name !== 'Computer Science') throw new Error('Subject add failed');
+        if (state.getSubjects().length !== 1) throw new Error('Subject count mismatch');
+      });
+
+      // TEST 3: Duplicate Subject Validation
+      assert('Reject duplicate subject name gracefully', () => {
+        let threw = false;
+        try {
+          state.addSubject({ name: 'Computer Science' });
+        } catch (e) {
+          threw = true;
+        }
+        if (!threw) throw new Error('Expected duplicate subject name to throw error');
+      });
+
+      // TEST 4: Add Task with validation
+      assert('Add Task with title, due date, subject, priority', () => {
+        const subj = state.getSubjects()[0];
+        const task = state.addTask({
+          title: 'Binary Search Implementation',
+          description: 'Implement in Python',
+          subjectId: subj.id,
+          dueDate: '2026-12-01',
+          dueTime: '23:59',
+          priority: 'high'
+        });
+        if (!task.id || task.completed !== false) throw new Error('Task creation failed');
+        if (state.getTasks().length !== 1) throw new Error('Task count mismatch');
+      });
+
+      // TEST 5: Task Empty Title Validation
+      assert('Task requires a non-empty title', () => {
+        let threw = false;
+        try {
+          state.addTask({ title: '   ', dueDate: '2026-12-01' });
+        } catch (e) {
+          threw = true;
+        }
+        if (!threw) throw new Error('Empty task title should fail validation');
+      });
+
+      // TEST 6: Complete Task
+      assert('Toggle task completion and update metrics', () => {
+        const task = state.getTasks()[0];
+        state.toggleTaskComplete(task.id);
+        const updated = state.getTask(task.id);
+        if (!updated.completed || !updated.completedAt) throw new Error('Task was not marked completed');
+
+        const stats = window.StudyFlowAnalytics.getTaskStats(state.getTasks(), state.getSubjects());
+        if (stats.completed !== 1 || stats.rate !== 100) throw new Error('Completion rate was not 100%');
+      });
+
+      // TEST 7: Add Exam and Countdown
+      assert('Add Exam and verify upcoming countdown calculation', () => {
+        const subj = state.getSubjects()[0];
+        const exam = state.addExam({
+          title: 'Algorithms Final',
+          subjectId: subj.id,
+          examDate: '2026-12-15',
+          examTime: '10:00',
+          location: 'Hall A'
+        });
+
+        if (!exam.id) throw new Error('Exam creation failed');
+        const examData = window.StudyFlowAnalytics.getExamData(state.getExams(), state.getSubjects());
+        if (examData.upcoming.length !== 1) throw new Error('Upcoming exams count mismatch');
+      });
+
+      // TEST 8: Add Study Session to Schedule
+      assert('Add Study Session with start time and duration', () => {
+        const subj = state.getSubjects()[0];
+        const session = state.addSession({
+          subjectId: subj.id,
+          date: '2026-11-25',
+          startTime: '14:00',
+          duration: 45,
+          topic: 'Dynamic programming practice'
+        });
+
+        if (!session.id || session.duration !== 45) throw new Error('Session creation failed');
+        if (state.getSessions().length !== 1) throw new Error('Sessions count mismatch');
+      });
+
+      // TEST 9: Focus Timer Pomodoro Engine
+      assert('Focus Timer starts, records focus duration, and logs study time', () => {
+        const timer = window.StudyFlowTimer;
+        timer.setMode('focus');
+        if (timer.remainingSeconds !== 25 * 60) throw new Error('Timer focus mode default is not 25m');
+
+        // Simulate session completion
+        state.recordFocusSession({ duration: 25, mode: 'focus' });
+        const focusStats = window.StudyFlowAnalytics.getFocusStats(state.getFocusLogs(), state.getTasks());
+        if (focusStats.allTimeMinutes < 25) throw new Error('Focus log duration not updated in analytics');
+      });
+
+      // TEST 10: Subject Deletion with Association Options
+      assert('Delete subject with choice to keep items unassigned', () => {
+        const subj = state.getSubjects()[0];
+        const task = state.getTasks()[0];
+
+        // Delete subject, keep associated items
+        state.deleteSubject(subj.id, false);
+
+        if (state.getSubjects().length !== 0) throw new Error('Subject was not deleted');
+        const updatedTask = state.getTask(task.id);
+        if (updatedTask.subjectId !== null) throw new Error('Associated task was not unassigned');
+      });
+
+      // TEST 11: Export Data to Valid JSON
+      let exportedJson = '';
+      assert('Export state to JSON backup', () => {
+        exportedJson = state.exportData();
+        const parsed = JSON.parse(exportedJson);
+        if (parsed.appName !== 'StudyFlow') throw new Error('Invalid export format');
+        if (!Array.isArray(parsed.tasks)) throw new Error('Tasks array missing from backup');
+      });
+
+      // TEST 12: Import Data with Schema Validation
+      assert('Import JSON backup and restore data cleanly', () => {
+        state.resetAllData();
+        if (state.getTasks().length !== 0) throw new Error('Reset failed');
+
+        const res = state.importData(exportedJson);
+        if (!res.success) throw new Error('Import failed');
+        if (state.getTasks().length !== 1) throw new Error('Tasks not restored after import');
+      });
+
+      // TEST 13: Reject Invalid/Corrupt Import
+      assert('Reject invalid or corrupted backup JSON files', () => {
+        let threw = false;
+        try {
+          state.importData('{ "invalid": true }');
+        } catch (e) {
+          threw = true;
+        }
+        if (!threw) throw new Error('Corrupt file should be rejected');
+      });
+
+      // TEST 14: Load Demo Data
+      assert('Load complete student sample demo package', () => {
+        state.loadDemoData();
+        if (state.getSubjects().length !== 4) throw new Error('Demo subjects count mismatch');
+        if (state.getTasks().length !== 6) throw new Error('Demo tasks count mismatch');
+        if (state.getExams().length !== 3) throw new Error('Demo exams count mismatch');
+        if (state.getSessions().length !== 4) throw new Error('Demo sessions count mismatch');
+      });
+
+      console.log(`All ${passed + failed} test assertions completed: ${passed} passed, ${failed} failed.`);
+    });
+  </script>
+</body>
+</html>

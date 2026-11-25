@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StudyFlow - Student Dashboard & Study Planner</title>
+  <meta name="description" content="Modern, fast, and private study dashboard for students to organize subjects, homework, exams, and Pomodoro focus sessions.">
+  <link rel="stylesheet" href="css/styles.css">
+  <!-- Preconnect and system font stack for snappy rendering -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+</head>
+<body class="theme-dark">
+  <div id="app" class="app-layout">
+    
+    <!-- DESKTOP / TABLET SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title">StudyFlow</span>
+            <span class="brand-subtitle">Student OS</span>
+          </div>
+        </div>
+        <button class="icon-btn mobile-close-btn" id="mobileDrawerClose" aria-label="Close menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Main Navigation">
+        <button class="nav-item active" data-view="dashboard">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-view="ai-teacher">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a8 8 0 0 0-8 8c0 3.36 2.07 6.24 5 7.42V20a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2.58c2.93-1.18 5-4.06 5-7.42a8 8 0 0 0-8-8z"></path><line x1="9.5" y1="9" x2="9.51" y2="9"></line><line x1="14.5" y1="9" x2="14.51" y2="9"></line><path d="M10 14h4"></path></svg>
+          <span>AI Teacher</span>
+          <span class="nav-badge" style="background:rgba(139,92,246,0.2);color:#a855f7;">AI</span>
+        </button>
+        <button class="nav-item" data-view="tasks">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          <span>Tasks &amp; Homework</span>
+          <span class="nav-badge" id="navPendingBadge">0</span>
+        </button>
+        <button class="nav-item" data-view="subjects">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          <span>Subjects</span>
+        </button>
+        <button class="nav-item" data-view="exams">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+          <span>Exams</span>
+          <span class="nav-badge nav-badge-exam" id="navExamsBadge">0</span>
+        </button>
+        <button class="nav-item" data-view="flashcards">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="16" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2H6"></path><path d="M22 17V9a2 2 0 0 0-2-2h-2"></path></svg>
+          <span>Flashcards</span>
+          <span class="nav-badge" id="navCardsBadge">0</span>
+        </button>
+        <button class="nav-item" data-view="schedule">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>Study Schedule</span>
+        </button>
+        <button class="nav-item" data-view="timer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Focus Timer</span>
+        </button>
+        <button class="nav-item" data-view="progress">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Progress</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <!-- Quick Focus Widget in Sidebar -->
+        <div class="sidebar-quick-timer" id="sidebarQuickTimer">
+          <div class="sqt-info">
+            <span class="sqt-title">Focus Mode</span>
+            <span class="sqt-time" id="sidebarTimerDisplay">25:00</span>
+          </div>
+          <button class="sqt-btn" id="sidebarTimerToggle" aria-label="Toggle Pomodoro Timer">
+            <svg id="sqtPlayIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </button>
+        </div>
+
+        <div class="sidebar-bottom-actions">
+          <button class="footer-btn" id="openPrivacyModalBtn" title="Data, Privacy &amp; Backup">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            <span>Data &amp; Privacy</span>
+          </button>
+          <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+            <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MOBILE HEADER & DRAWER BACKDROP -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+      <!-- TOP HEADER BAR -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="icon-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="page-title-box">
+            <h1 class="page-title" id="pageTitle">Dashboard</h1>
+            <span class="current-date-badge" id="currentDateBadge">Today</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Streak indicator -->
+          <div class="streak-pill" id="headerStreakPill" title="Consecutive days with study activity">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2c.5 2.5 2 4.5 4 6 2.5 1.8 4 4.5 4 7.5 0 4.4-3.6 8.5-8 8.5s-8-4.1-8-8.5c0-4.3 3.3-7.7 5-11 .8 2 2.2 3.5 3 4.5.3-2.5 0-5 0-7z"></path></svg>
+            <span id="streakCountText">0 day streak</span>
+          </div>
+
+          <!-- Quick Action Add Button Dropdown -->
+          <div class="quick-add-menu-container">
+            <button class="btn btn-primary btn-sm quick-add-trigger" id="quickAddTrigger">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>New</span>
+            </button>
+            <div class="quick-add-dropdown" id="quickAddDropdown">
+              <button class="dropdown-item" id="quickAddTaskBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                <span>Add Task</span>
+              </button>
+              <button class="dropdown-item" id="quickAddSubjectBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                <span>Add Subject</span>
+              </button>
+              <button class="dropdown-item" id="quickAddExamBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+                <span>Add Exam</span>
+              </button>
+              <button class="dropdown-item" id="quickAddSessionBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Add Study Session</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Header Theme toggle for mobile/header -->
+          <button class="theme-toggle-btn header-theme-toggle" id="headerThemeToggleBtn" aria-label="Toggle Theme">
+            <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+            <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- MAIN CONTENT CONTAINER (Views switch here) -->
+      <main class="content-container">
+
+        <!-- ============================================== -->
+        <!-- VIEW: DASHBOARD                                -->
+        <!-- ============================================== -->
+        <section class="view-panel active" id="view-dashboard">
+          <!-- Welcome & Summary Banner -->
+          <div class="welcome-banner">
+            <div class="welcome-content">
+              <span class="welcome-eyebrow" id="dashGreetingEyebrow">Welcome to StudyFlow</span>
+              <h2 class="welcome-heading" id="dashGreetingHeading">Ready to crush your goals?</h2>
+              <p class="welcome-subtext" id="dashGreetingSummary">Loading your study progress...</p>
+            </div>
+            <div class="welcome-actions">
+              <button class="btn btn-primary" id="dashStartTimerBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span>Start Focus</span>
+              </button>
+              <button class="btn btn-secondary" id="dashQuickTaskBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Task</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- AI INSIGHTS & DAILY COACH WIDGET -->
+          <div class="card ai-insights-widget" id="dashAiInsightsWidget">
+            <div class="ai-widget-header">
+              <div class="ai-header-left">
+                <div class="ai-badge-pulse">
+                  <span class="ai-pulse-dot"></span>
+                  <span class="ai-badge-text">AI Coach</span>
+                </div>
+                <h3 class="ai-widget-title">Daily Study Intelligence</h3>
+              </div>
+              <button class="btn btn-ghost btn-sm" id="dashAiOpenTutorBtn">
+                <span>Chat with AI Teacher &rarr;</span>
+              </button>
+            </div>
+            <div class="ai-widget-content">
+              <div class="ai-recommendation-box">
+                <div class="ai-recom-icon">⚡</div>
+                <div class="ai-recom-text">
+                  <h4 class="ai-recom-headline" id="dashAiHeadline">Analyzing your upcoming exams and deadlines...</h4>
+                  <p class="ai-recom-desc" id="dashAiRecommendation">Loading personalized priority recommendations...</p>
+                </div>
+              </div>
+              <div class="ai-tip-banner">
+                <span class="ai-tip-badge">🧠 Cognitive Tip</span>
+                <span class="ai-tip-content" id="dashAiTipText">Loading study science tip...</span>
+              </div>
+            </div>
+            <div class="ai-widget-actions">
+              <button class="btn btn-primary btn-sm" id="dashAiActionBtn">Focus on Priority</button>
+              <button class="btn btn-secondary btn-sm" id="dashAiGenPlanBtn">⚡ Generate 5-Hour Plan</button>
+            </div>
+          </div>
+
+          <!-- 4 Metric Cards Grid -->
+          <div class="metrics-grid">
+            <div class="metric-card card-purple" tabindex="0">
+              <div class="metric-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              </div>
+              <div class="metric-data">
+                <span class="metric-label">Pending Tasks</span>
+                <div class="metric-value-row">
+                  <span class="metric-number" id="dashMetricPending">0</span>
+                  <span class="metric-badge-overdue" id="dashMetricOverdue" style="display:none;">0 overdue</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-card card-blue" tabindex="0">
+              <div class="metric-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+              </div>
+              <div class="metric-data">
+                <span class="metric-label">Upcoming Exams</span>
+                <div class="metric-value-row">
+                  <span class="metric-number" id="dashMetricExams">0</span>
+                  <span class="metric-sub" id="dashMetricNextExam">None soon</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-card card-emerald" tabindex="0">
+              <div class="metric-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              </div>
+              <div class="metric-data">
+                <span class="metric-label">Tasks Completed</span>
+                <div class="metric-value-row">
+                  <span class="metric-number" id="dashMetricCompleted">0</span>
+                  <span class="metric-sub" id="dashMetricRate">0% rate</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="metric-card card-indigo" tabindex="0">
+              <div class="metric-icon">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div class="metric-data">
+                <span class="metric-label">Total Focus Time</span>
+                <div class="metric-value-row">
+                  <span class="metric-number" id="dashMetricFocus">0m</span>
+                  <span class="metric-sub" id="dashMetricTodayFocus">0m today</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dashboard Two-Column Grid: Deadlines + Quick Schedule -->
+          <div class="dashboard-columns-grid">
+            <!-- Upcoming Deadlines Box -->
+            <div class="card deadlines-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">Upcoming Deadlines</h3>
+                  <span class="card-subtitle">Sorted chronologically by due date</span>
+                </div>
+                <button class="btn btn-ghost btn-sm" id="dashViewAllTasksBtn">View All Tasks</button>
+              </div>
+              <div class="deadlines-list" id="dashDeadlinesList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+
+            <!-- Today's Schedule & Quick Action Hub -->
+            <div class="card today-schedule-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">Today's Schedule</h3>
+                  <span class="card-subtitle" id="dashTodayDateStr">Today</span>
+                </div>
+                <button class="btn btn-ghost btn-sm" id="dashViewScheduleBtn">Full Schedule</button>
+              </div>
+              <div class="today-sessions-list" id="dashTodaySessionsList">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: TASKS & HOMEWORK                         -->
+        <!-- ============================================== -->
+        <section class="view-panel" id="view-tasks">
+          <!-- Control Bar: Search, Filters, Add Button -->
+          <div class="view-toolbar">
+            <div class="toolbar-search">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="taskSearchInput" placeholder="Search tasks or homework..." aria-label="Search tasks">
+              <button class="clear-search-btn" id="taskSearchClearBtn" style="display:none;" aria-label="Clear search">&times;</button>
+            </div>
+
+            <div class="toolbar-filters">
+              <!-- Filter by Subject -->
+              <select class="form-select filter-select" id="taskFilterSubject" aria-label="Filter tasks by subject">
+                <option value="all">All Subjects</option>
+              </select>
+
+              <!-- Filter by Priority -->
+              <select class="form-select filter-select" id="taskFilterPriority" aria-label="Filter tasks by priority">
+                <option value="all">All Priorities</option>
+                <option value="high">High Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="low">Low Priority</option>
+              </select>
+
+              <!-- Filter by Status -->
+              <select class="form-select filter-select" id="taskFilterStatus" aria-label="Filter tasks by status">
+                <option value="pending">Incomplete / Pending</option>
+                <option value="overdue">Overdue Only</option>
+                <option value="completed">Completed</option>
+                <option value="all">All Tasks</option>
+              </select>
+
+              <!-- Sort Order -->
+              <select class="form-select filter-select" id="taskSortOrder" aria-label="Sort tasks">
+                <option value="dueDateAsc">Due Date (Soonest)</option>
+                <option value="dueDateDesc">Due Date (Furthest)</option>
+                <option value="priorityHigh">Priority (High to Low)</option>
+                <option value="titleAsc">Title (A-Z)</option>
+              </select>
+
+              <button class="btn btn-primary" id="openAddTaskModalBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Task</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tasks List Container -->
+          <div class="tasks-container" id="tasksListContainer">
+            <!-- Rendered by UI -->
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: SUBJECTS                                 -->
+        <!-- ============================================== -->
+        <section class="view-panel" id="view-subjects">
+          <div class="view-header-row">
+            <div>
+              <h2 class="section-title">Enrolled Subjects</h2>
+              <p class="section-desc">Manage courses, assignments, and study materials in one place.</p>
+            </div>
+            <button class="btn btn-primary" id="openAddSubjectModalBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Add Subject</span>
+            </button>
+          </div>
+
+          <div class="subjects-grid" id="subjectsGridContainer">
+            <!-- Rendered by UI -->
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: EXAMS                                    -->
+        <!-- ============================================== -->
+        <section class="view-panel" id="view-exams">
+          <div class="view-header-row">
+            <div>
+              <h2 class="section-title">Exam Timetable &amp; Quizzes</h2>
+              <p class="section-desc">Track test dates, locations, target scores, and live countdowns.</p>
+            </div>
+            <button class="btn btn-primary" id="openAddExamModalBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Add Exam</span>
+            </button>
+          </div>
+
+          <!-- Tabs for Upcoming vs Past Exams -->
+          <div class="tabs-nav" role="tablist">
+            <button class="tab-btn active" id="tabUpcomingExams" role="tab" aria-selected="true">
+              <span>Upcoming Exams</span>
+              <span class="tab-count" id="upcomingExamsCount">0</span>
+            </button>
+            <button class="tab-btn" id="tabPastExams" role="tab" aria-selected="false">
+              <span>Past Exams</span>
+              <span class="tab-count" id="pastExamsCount">0</span>
+            </button>
+          </div>
+
+          <!-- AI EXAM STUDY PRIORITY RECOMMENDER -->
+          <div class="card ai-exam-priority-card" id="aiExamPriorityCard">
+            <div class="ai-exam-priority-header">
+              <div class="ai-priority-title-wrap">
+                <span class="ai-sparkle-pill">⚡ AI Prioritization</span>
+                <h3 class="ai-priority-title">Recommended Study Order</h3>
+              </div>
+              <span class="text-xs text-muted">Ranked by exam proximity &amp; subject difficulty</span>
+            </div>
+            <div class="ai-exam-rank-list" id="aiExamRankList">
+              <!-- Populated by UI -->
+            </div>
+          </div>
+
+          <div class="exams-container" id="examsListContainer">
+            <!-- Rendered by UI -->
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: STUDY SCHEDULE                           -->
+        <!-- ============================================== -->
+        <section class="view-panel" id="view-schedule">
+          <div class="view-header-row">
+            <div>
+              <h2 class="section-title">Weekly Study Planner</h2>
+              <p class="section-desc">Plan dedicated study blocks throughout your week to stay consistent.</p>
+            </div>
+            <div class="header-actions-group">
+              <button class="btn btn-secondary" id="openAiStudyPlanBtn">
+                <span>⚡ Generate AI Study Plan</span>
+              </button>
+              <button class="btn btn-primary" id="openAddSessionModalBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Study Session</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 7-Day Weekly Calendar Matrix -->
+          <div class="schedule-calendar-grid" id="scheduleWeekGrid">
+            <!-- 7 columns for Mon through Sun populated dynamically -->
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: AI TEACHER (ACADEMIC TUTOR CHAT)          -->
+        <!-- ============================================== -->
+        <section class="view-panel" id="view-ai-teacher">
+          <div class="ai-teacher-layout">
+            <div class="ai-teacher-sidebar card">
+              <div class="ai-badge-pulse" style="align-self: flex-start; margin-bottom: 0.5rem;">
+                <span class="ai-pulse-dot"></span>
+                <span class="ai-badge-text">24/7 Academic Mentor</span>
+              </div>
+              <h3 class="ai-teacher-title">AI Teacher</h3>
+              <p class="ai-teacher-desc">Ask complex homework questions, paste lecture notes for executive summaries, or get step-by-step problem walkthroughs.</p>
+              
+              <div class="form-group" style="margin-top: 1rem;">
+                <label for="aiTutorSubjectSelect" class="form-label">Subject Context</label>
+                <select id="aiTutorSubjectSelect" class="form-select">
+                  <option value="General">General Academic</option>
+                </select>
+              </div>
+
+              <div class="ai-quick-prompts-box">
+                <span class="ai-prompts-label">Quick Actions:</span>
+                <button class="ai-prompt-chip" data-prompt="Summarize my notes into 3 core bullet points: ">
+                  📑 Summarize Notes
+                </button>
+                <button class="ai-prompt-chip" data-prompt="Explain this concept simply like I'm a beginner: ">
+                  💡 Explain Concept
+                </button>
+                <button class="ai-prompt-chip" data-prompt="Create a multiple choice practice quiz on: ">
+                  📝 Practice Quiz
+                </button>
+                <button class="ai-prompt-chip" data-prompt="Walk me through solving this step-by-step: ">
+                  🔢 Step-by-Step Solve
+                </button>
+              </div>
+
+              <button class="btn btn-ghost btn-sm" id="clearAiChatBtn" style="margin-top:auto;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <span>Clear Chat</span>
+              </button>
+            </div>
+
+            <div class="ai-chat-main card">
+              <div class="ai-chat-messages" id="aiChatMessagesContainer">
+                <!-- Rendered dynamically -->
+              </div>
+
+              <div class="ai-chat-input-area">
+                <textarea id="aiChatInput" class="form-textarea ai-chat-textarea" rows="2" placeholder="Ask your question or paste your lecture notes... (Press Enter to send)"></textarea>
+                <button class="btn btn-primary ai-chat-send-btn" id="aiChatSendBtn" aria-label="Send message">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: FLASHCARDS (LEARNING ASSISTANT)           -->
+        <!-- ============================================== -->
+        <section class="view-panel" id="view-flashcards">
+          <div class="view-header-row">
+            <div>
+              <h2 class="section-title">Active Recall Flashcards</h2>
+              <p class="section-desc">Flip cards to test memory retention and track mastery scores.</p>
+            </div>
+            <div class="header-actions-group">
+              <button class="btn btn-secondary" id="openAiGenerateFlashcardsBtn">
+                <span>✨ AI Generate from Notes</span>
+              </button>
+              <button class="btn btn-primary" id="openAddFlashcardModalBtn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                <span>Add Card</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Flashcards Filter & Progress Bar -->
+          <div class="view-toolbar" style="margin-bottom: 1.25rem;">
+            <div class="toolbar-filters">
+              <select class="form-select filter-select" id="flashcardFilterSubject">
+                <option value="all">All Subjects</option>
+              </select>
+              <span class="flashcard-deck-counter" id="flashcardDeckCounter">0 cards in deck</span>
+            </div>
+          </div>
+
+          <!-- Interactive 3D Study Card Area -->
+          <div class="flashcard-study-container" id="flashcardStudyContainer">
+            <!-- 3D Card flipper populated by UI -->
+          </div>
+
+          <!-- Cards Table / Grid Overview -->
+          <div class="card" style="margin-top: 2rem;">
+            <div class="card-header">
+              <h3 class="card-title">All Deck Cards</h3>
+              <span class="card-subtitle">Review questions and answers</span>
+            </div>
+            <div class="flashcards-grid-list" id="flashcardsGridList">
+              <!-- Rendered by UI -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: FOCUS TIMER                              -->
+        <!-- ============================================== -->
+        <section class="view-panel" id="view-timer">
+          <div class="focus-timer-container">
+            <!-- Mode Switcher Tabs -->
+            <div class="timer-mode-tabs" role="tablist">
+              <button class="timer-mode-btn active" data-mode="focus" role="tab">Focus (25m)</button>
+              <button class="timer-mode-btn" data-mode="shortBreak" role="tab">Short Break (5m)</button>
+              <button class="timer-mode-btn" data-mode="longBreak" role="tab">Long Break (15m)</button>
+            </div>
+
+            <!-- Subject Selection for Session Tagging -->
+            <div class="timer-subject-selector">
+              <label for="timerSubjectSelect">Target Subject (optional):</label>
+              <select class="form-select" id="timerSubjectSelect">
+                <option value="">General Study (No Subject)</option>
+              </select>
+            </div>
+
+            <!-- Big Circular / Dial Display -->
+            <div class="timer-display-dial">
+              <svg class="timer-dial-svg" viewBox="0 0 280 280">
+                <circle class="timer-dial-track" cx="140" cy="140" r="120" stroke-width="10" />
+                <circle class="timer-dial-progress" id="timerDialProgress" cx="140" cy="140" r="120" stroke-width="10" transform="rotate(-90 140 140)" />
+              </svg>
+              <div class="timer-dial-content">
+                <span class="timer-mode-badge" id="timerModeBadge">FOCUS SESSION</span>
+                <span class="timer-time-digits" id="timerTimeDigits">25:00</span>
+                <span class="timer-status-hint" id="timerStatusHint">Ready to begin</span>
+              </div>
+            </div>
+
+            <!-- Controls (Start, Pause, Reset, Skip) -->
+            <div class="timer-controls-row">
+              <button class="btn btn-secondary timer-control-btn" id="timerResetBtn" title="Reset Session">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><polyline points="3 3 3 8 8 8"></polyline></svg>
+                <span>Reset</span>
+              </button>
+
+              <button class="btn btn-primary btn-lg timer-play-btn" id="timerPlayBtn">
+                <svg id="timerPlayIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                <span id="timerPlayBtnText">Start Focus</span>
+              </button>
+
+              <button class="btn btn-secondary timer-control-btn" id="timerSkipBtn" title="Skip to next">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                <span>Skip</span>
+              </button>
+            </div>
+
+            <!-- Timer Settings Accordion / Custom Durations -->
+            <div class="timer-custom-settings card">
+              <h4 class="custom-settings-title">Custom Durations &amp; Audio</h4>
+              <div class="custom-durations-grid">
+                <div class="form-group">
+                  <label for="inputFocusMins">Focus (mins)</label>
+                  <input type="number" id="inputFocusMins" min="1" max="180" value="25" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label for="inputShortBreakMins">Short Break (mins)</label>
+                  <input type="number" id="inputShortBreakMins" min="1" max="60" value="5" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label for="inputLongBreakMins">Long Break (mins)</label>
+                  <input type="number" id="inputLongBreakMins" min="1" max="90" value="15" class="form-input">
+                </div>
+              </div>
+
+              <div class="timer-settings-toggles">
+                <label class="toggle-control">
+                  <input type="checkbox" id="timerSoundToggle" checked>
+                  <span class="toggle-track"></span>
+                  <span class="toggle-label">Play Harmonic Chime when session ends</span>
+                </label>
+                <button class="btn btn-ghost btn-sm" id="testChimeBtn">Test Sound</button>
+              </div>
+
+              <!-- Browser Limitation Note -->
+              <div class="browser-notice-box">
+                <div class="notice-icon">💡</div>
+                <div class="notice-text">
+                  <strong>Browser Background Note:</strong> StudyFlow uses precise system clock timestamps so your session time is 100% accurate even if you switch tabs or minimize the window. Keep this tab open or pinned to ensure audio chimes play promptly when your session finishes!
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============================================== -->
+        <!-- VIEW: PROGRESS & ANALYTICS                     -->
+        <!-- ============================================== -->
+        <section class="view-panel" id="view-progress">
+          <div class="view-header-row">
+            <div>
+              <h2 class="section-title">Study Analytics &amp; Habits</h2>
+              <p class="section-desc">Visualize your productivity, task turnaround, and daily focus trends.</p>
+            </div>
+          </div>
+
+          <!-- Highlight Cards -->
+          <div class="analytics-hero-grid">
+            <div class="card stat-hero-card">
+              <div class="stat-hero-header">
+                <span class="stat-hero-title">Study Streak</span>
+                <span class="stat-hero-icon">🔥</span>
+              </div>
+              <div class="stat-hero-value" id="progressStreakVal">0 Days</div>
+              <span class="stat-hero-sub" id="progressStreakSub">Complete a task or timer daily to grow</span>
+            </div>
+
+            <div class="card stat-hero-card">
+              <div class="stat-hero-header">
+                <span class="stat-hero-title">Focus Time Today</span>
+                <span class="stat-hero-icon">⏱️</span>
+              </div>
+              <div class="stat-hero-value" id="progressTodayFocusVal">0m</div>
+              <span class="stat-hero-sub" id="progressWeekFocusSub">0m logged this week</span>
+            </div>
+
+            <div class="card stat-hero-card">
+              <div class="stat-hero-header">
+                <span class="stat-hero-title">Total Lifetime Study</span>
+                <span class="stat-hero-icon">🏆</span>
+              </div>
+              <div class="stat-hero-value" id="progressAllTimeFocusVal">0h 0m</div>
+              <span class="stat-hero-sub">Logged across all focus sessions</span>
+            </div>
+          </div>
+
+          <!-- Charts Row -->
+          <div class="progress-charts-grid">
+            <!-- Weekly Focus Hours Chart -->
+            <div class="card chart-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">This Week's Focus Time</h3>
+                  <span class="card-subtitle">Monday through Sunday breakdown</span>
+                </div>
+              </div>
+              <div class="chart-content" id="weeklyFocusChartContainer">
+                <!-- SVG Bar Chart -->
+              </div>
+            </div>
+
+            <!-- Task Completion Donut & Breakdown -->
+            <div class="card chart-card">
+              <div class="card-header">
+                <div class="card-title-group">
+                  <h3 class="card-title">Task Completion Rate</h3>
+                  <span class="card-subtitle" id="progressCompletionSubtitle">All tasks status</span>
+                </div>
+              </div>
+              <div class="donut-analytics-row">
+                <div class="donut-chart-box" id="taskDonutContainer">
+                  <!-- SVG Donut Chart -->
+                </div>
+                <div class="donut-breakdown-box">
+                  <div class="breakdown-stat-item">
+                    <span class="bsi-dot dot-completed"></span>
+                    <span class="bsi-label">Completed:</span>
+                    <strong class="bsi-val" id="progressDoneCount">0</strong>
+                  </div>
+                  <div class="breakdown-stat-item">
+                    <span class="bsi-dot dot-pending"></span>
+                    <span class="bsi-label">Pending:</span>
+                    <strong class="bsi-val" id="progressPendingCount">0</strong>
+                  </div>
+                  <div class="breakdown-stat-item">
+                    <span class="bsi-dot dot-overdue"></span>
+                    <span class="bsi-label">Overdue:</span>
+                    <strong class="bsi-val" id="progressOverdueCount">0</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Subject Progress Table -->
+          <div class="card progress-subject-card">
+            <div class="card-header">
+              <h3 class="card-title">Subject Breakdown</h3>
+              <span class="card-subtitle">Task completion and workload per subject</span>
+            </div>
+            <div class="subject-progress-list" id="progressSubjectList">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- MOBILE BOTTOM NAVIGATION BAR -->
+      <nav class="mobile-bottom-nav" aria-label="Mobile Navigation">
+        <button class="mb-nav-item active" data-view="dashboard">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          <span>Home</span>
+        </button>
+        <button class="mb-nav-item" data-view="tasks">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          <span>Tasks</span>
+        </button>
+        <button class="mb-nav-item" data-view="schedule">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span>Schedule</span>
+        </button>
+        <button class="mb-nav-item" data-view="timer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Timer</span>
+        </button>
+        <button class="mb-nav-item" data-view="progress">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+          <span>Progress</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODALS                                         -->
+  <!-- ============================================== -->
+
+  <!-- MODAL: ADD / EDIT TASK -->
+  <div class="modal-backdrop" id="taskModal" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="taskModalTitle">Add Task</h3>
+        <button class="icon-btn modal-close-btn" data-close-modal="taskModal" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="taskForm" novalidate>
+        <input type="hidden" id="taskEditId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="taskTitleInput" class="form-label required">Task Title</label>
+            <input type="text" id="taskTitleInput" class="form-input" placeholder="e.g. Finish Calculus Problem Set 4" required maxlength="120">
+            <span class="field-error" id="taskTitleError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="taskSubjectSelect" class="form-label">Subject</label>
+            <select id="taskSubjectSelect" class="form-select">
+              <option value="">General / Unassigned</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="taskDueDateInput" class="form-label required">Due Date</label>
+              <input type="date" id="taskDueDateInput" class="form-input" required>
+              <span class="field-error" id="taskDueDateError"></span>
+            </div>
+            <div class="form-group flex-1">
+              <label for="taskDueTimeInput" class="form-label">Due Time (optional)</label>
+              <input type="time" id="taskDueTimeInput" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Priority</label>
+            <div class="priority-radio-group">
+              <label class="priority-radio-option priority-low">
+                <input type="radio" name="taskPriority" value="low">
+                <span>Low</span>
+              </label>
+              <label class="priority-radio-option priority-medium">
+                <input type="radio" name="taskPriority" value="medium" checked>
+                <span>Medium</span>
+              </label>
+              <label class="priority-radio-option priority-high">
+                <input type="radio" name="taskPriority" value="high">
+                <span>High</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="taskDescInput" class="form-label">Description &amp; Notes (optional)</label>
+            <textarea id="taskDescInput" class="form-textarea" rows="3" placeholder="Add assignment guidelines, textbook chapters, or submission links..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="taskModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveTaskSubmitBtn">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT SUBJECT -->
+  <div class="modal-backdrop" id="subjectModal" role="dialog" aria-modal="true" aria-labelledby="subjectModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="subjectModalTitle">Add Subject</h3>
+        <button class="icon-btn modal-close-btn" data-close-modal="subjectModal" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="subjectForm" novalidate>
+        <input type="hidden" id="subjectEditId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="subjectNameInput" class="form-label required">Subject Name</label>
+            <input type="text" id="subjectNameInput" class="form-input" placeholder="e.g. Computer Science, Organic Chemistry" required maxlength="60">
+            <span class="field-error" id="subjectNameError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="subjectCodeInput" class="form-label">Course Code (optional)</label>
+            <input type="text" id="subjectCodeInput" class="form-input" placeholder="e.g. CS 101, CHEM 220" maxlength="15">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Subject Color Accent</label>
+            <div class="color-preset-picker" id="subjectColorPresets">
+              <!-- Preset color radio pills -->
+              <button type="button" class="color-dot active" data-color="#8b5cf6" style="background:#8b5cf6;" title="Purple" aria-label="Purple"></button>
+              <button type="button" class="color-dot" data-color="#3b82f6" style="background:#3b82f6;" title="Blue" aria-label="Blue"></button>
+              <button type="button" class="color-dot" data-color="#06b6d4" style="background:#06b6d4;" title="Cyan" aria-label="Cyan"></button>
+              <button type="button" class="color-dot" data-color="#10b981" style="background:#10b981;" title="Emerald" aria-label="Emerald"></button>
+              <button type="button" class="color-dot" data-color="#f59e0b" style="background:#f59e0b;" title="Amber" aria-label="Amber"></button>
+              <button type="button" class="color-dot" data-color="#ec4899" style="background:#ec4899;" title="Pink" aria-label="Pink"></button>
+              <button type="button" class="color-dot" data-color="#ef4444" style="background:#ef4444;" title="Red" aria-label="Red"></button>
+              <button type="button" class="color-dot" data-color="#6366f1" style="background:#6366f1;" title="Indigo" aria-label="Indigo"></button>
+            </div>
+            <div class="custom-color-row">
+              <span class="custom-color-label">Custom color:</span>
+              <input type="color" id="subjectCustomColorInput" value="#8b5cf6">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="subjectDescInput" class="form-label">Description / Syllabus Notes (optional)</label>
+            <textarea id="subjectDescInput" class="form-textarea" rows="3" placeholder="Professor office hours, classroom location, grading weights..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="subjectModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveSubjectSubmitBtn">Save Subject</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: DELETE SUBJECT CONFIRMATION (WITH ASSOCIATED ITEMS OPTION) -->
+  <div class="modal-backdrop" id="deleteSubjectModal" role="dialog" aria-modal="true" aria-labelledby="deleteSubjectTitle">
+    <div class="modal-card modal-card-sm">
+      <div class="modal-header modal-header-danger">
+        <h3 class="modal-title" id="deleteSubjectTitle">Delete Subject</h3>
+        <button class="icon-btn modal-close-btn" data-close-modal="deleteSubjectModal" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-confirm-text" id="deleteSubjectConfirmText">
+          Are you sure you want to delete this subject?
+        </p>
+
+        <div class="delete-options-box">
+          <label class="radio-choice">
+            <input type="radio" name="deleteAssociatedChoice" value="keep" checked>
+            <span>
+              <strong>Keep associated items</strong><br>
+              <small class="text-muted">Tasks and exams will remain in your dashboard marked as "General / Unassigned".</small>
+            </span>
+          </label>
+          <label class="radio-choice">
+            <input type="radio" name="deleteAssociatedChoice" value="delete">
+            <span>
+              <strong>Delete all associated items</strong><br>
+              <small class="text-danger">Permanently delete all tasks, exams, and study sessions linked to this subject.</small>
+            </span>
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="deleteSubjectModal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteSubjectBtn">Delete Subject</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT EXAM -->
+  <div class="modal-backdrop" id="examModal" role="dialog" aria-modal="true" aria-labelledby="examModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="examModalTitle">Add Exam</h3>
+        <button class="icon-btn modal-close-btn" data-close-modal="examModal" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="examForm" novalidate>
+        <input type="hidden" id="examEditId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="examTitleInput" class="form-label required">Exam Title / Test Name</label>
+            <input type="text" id="examTitleInput" class="form-input" placeholder="e.g. Midterm 1: Organic Chemistry" required maxlength="100">
+            <span class="field-error" id="examTitleError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="examSubjectSelect" class="form-label">Subject</label>
+            <select id="examSubjectSelect" class="form-select">
+              <option value="">General / Unassigned</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="examDateInput" class="form-label required">Exam Date</label>
+              <input type="date" id="examDateInput" class="form-input" required>
+              <span class="field-error" id="examDateError"></span>
+            </div>
+            <div class="form-group flex-1">
+              <label for="examTimeInput" class="form-label">Start Time (optional)</label>
+              <input type="time" id="examTimeInput" class="form-input">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="examDifficultySelect" class="form-label">Difficulty Level</label>
+              <select id="examDifficultySelect" class="form-select">
+                <option value="easy">Easy (Foundational)</option>
+                <option value="medium" selected>Medium (Standard)</option>
+                <option value="hard">Hard (Demanding)</option>
+                <option value="extreme">Extreme (Comprehensive / Final)</option>
+              </select>
+            </div>
+            <div class="form-group flex-1">
+              <label for="examPrepHoursInput" class="form-label">Estimated Prep (Hours)</label>
+              <input type="number" id="examPrepHoursInput" class="form-input" min="1" max="100" value="8">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="examLocationInput" class="form-label">Location / Room (optional)</label>
+            <input type="text" id="examLocationInput" class="form-input" placeholder="e.g. Hall 4B, Room 102 or Zoom link" maxlength="80">
+          </div>
+
+          <div class="form-group">
+            <label for="examNotesInput" class="form-label">Preparation Notes &amp; Topics (optional)</label>
+            <textarea id="examNotesInput" class="form-textarea" rows="3" placeholder="Key formulas, chapters covered, permitted materials (calculator, cheat sheet)..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="examModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveExamSubmitBtn">Save Exam</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT STUDY SESSION -->
+  <div class="modal-backdrop" id="sessionModal" role="dialog" aria-modal="true" aria-labelledby="sessionModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="sessionModalTitle">Add Study Session</h3>
+        <button class="icon-btn modal-close-btn" data-close-modal="sessionModal" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="sessionForm" novalidate>
+        <input type="hidden" id="sessionEditId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="sessionSubjectSelect" class="form-label">Subject</label>
+            <select id="sessionSubjectSelect" class="form-select">
+              <option value="">General Study</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="sessionTopicInput" class="form-label">Session Topic / Goal (optional)</label>
+            <input type="text" id="sessionTopicInput" class="form-input" placeholder="e.g. Practice Chapter 5 Integration problems" maxlength="100">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group flex-1">
+              <label for="sessionDateInput" class="form-label required">Date</label>
+              <input type="date" id="sessionDateInput" class="form-input" required>
+              <span class="field-error" id="sessionDateError"></span>
+            </div>
+            <div class="form-group flex-1">
+              <label for="sessionTimeInput" class="form-label">Start Time</label>
+              <input type="time" id="sessionTimeInput" class="form-input" value="10:00">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="sessionDurationInput" class="form-label required">Duration (minutes)</label>
+            <select id="sessionDurationInput" class="form-select">
+              <option value="25">25 minutes (1 Pomodoro)</option>
+              <option value="45">45 minutes</option>
+              <option value="60" selected>60 minutes (1 Hour)</option>
+              <option value="90">90 minutes (1.5 Hours)</option>
+              <option value="120">120 minutes (2 Hours)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="sessionModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveSessionSubmitBtn">Save Session</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: DATA & PRIVACY / BACKUP -->
+  <div class="modal-backdrop" id="privacyModal" role="dialog" aria-modal="true" aria-labelledby="privacyModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="privacyModalTitle">Data &amp; Privacy</h3>
+        <button class="icon-btn modal-close-btn" data-close-modal="privacyModal" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="privacy-guarantee-box">
+          <div class="pg-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+          </div>
+          <div class="pg-text">
+            <strong>100% Local &amp; Private Storage</strong>
+            <p>StudyFlow requires no login. Your courses, homework, exams, and timer logs are stored exclusively inside your browser's local storage. None of your data is sent to external servers or cloud trackers.</p>
+            <p class="privacy-warning">⚠️ <em>Important Notice:</em> If you clear your browser cookies and site data, or use incognito mode, your stored data may be erased. We recommend creating periodic backups below.</p>
+          </div>
+        </div>
+
+        <div class="backup-actions-grid">
+          <!-- Export -->
+          <div class="backup-card">
+            <h4>Export Backup</h4>
+            <p>Download a JSON backup of all your subjects, tasks, exams, schedule, and focus time.</p>
+            <button class="btn btn-secondary" id="exportBackupBtn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Download JSON Backup</span>
+            </button>
+          </div>
+
+          <!-- Import -->
+          <div class="backup-card">
+            <h4>Import / Restore Data</h4>
+            <p>Restore your data from a previously downloaded StudyFlow JSON backup file.</p>
+            <label class="btn btn-secondary file-upload-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Select Backup File</span>
+              <input type="file" id="importFileInput" accept=".json" style="display:none;">
+            </label>
+            <span class="field-error" id="importErrorText"></span>
+          </div>
+        </div>
+
+        <div class="quick-demo-box">
+          <div class="qdb-content">
+            <strong>Sample Demo Data</strong>
+            <p>Evaluating the app? Load realistic course templates, sample homework, test dates, and study sessions in 1 click.</p>
+          </div>
+          <button class="btn btn-ghost" id="loadDemoDataBtn">Load Sample Data</button>
+        </div>
+
+        <div class="danger-zone-box">
+          <div class="dz-content">
+            <strong class="text-danger">Reset All Data</strong>
+            <p>Clear all local tasks, subjects, schedule, and focus history to start fresh.</p>
+          </div>
+          <button class="btn btn-danger btn-sm" id="resetAllDataBtn">Reset Everything</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AI 5-HOUR STUDY PLANNER -->
+  <div class="modal-backdrop" id="aiPlanModal" role="dialog" aria-modal="true" aria-labelledby="aiPlanModalTitle">
+    <div class="modal-card" style="max-width: 620px;">
+      <div class="modal-header">
+        <div class="ai-priority-title-wrap">
+          <span class="ai-sparkle-pill">⚡ AI Deep Work Engine</span>
+          <h3 class="modal-title" id="aiPlanModalTitle">Generated 5-Hour Study Plan</h3>
+        </div>
+        <button class="icon-btn modal-close-btn" data-close-modal="aiPlanModal" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="ai-plan-rationale-box" id="aiPlanRationale">
+          <!-- Populated by AI -->
+        </div>
+
+        <div class="ai-plan-blocks-list" id="aiPlanBlocksList">
+          <!-- Populated by AI -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal="aiPlanModal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="applyAiPlanBtn">
+          <span>Apply All to Schedule</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: AI FLASHCARD GENERATOR -->
+  <div class="modal-backdrop" id="aiFlashcardModal" role="dialog" aria-modal="true" aria-labelledby="aiFlashcardTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="ai-priority-title-wrap">
+          <span class="ai-sparkle-pill">✨ Active Recall AI</span>
+          <h3 class="modal-title" id="aiFlashcardTitle">Generate Flashcards from Notes</h3>
+        </div>
+        <button class="icon-btn modal-close-btn" data-close-modal="aiFlashcardModal" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="aiFlashcardForm" novalidate>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="aiFcSubjectSelect" class="form-label">Subject</label>
+            <select id="aiFcSubjectSelect" class="form-select">
+              <option value="">General</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="aiFcNotesInput" class="form-label required">Paste Lecture Notes, Definitions, or Article Excerpt</label>
+            <textarea id="aiFcNotesInput" class="form-textarea" rows="6" placeholder="Paste textbook definitions, concepts, or formulas here... e.g.:&#10;Binary Search: An efficient algorithm that searches a sorted array in O(log n) time.&#10;Mitochondria: Organelle responsible for ATP cellular respiration." required></textarea>
+            <span class="field-error" id="aiFcNotesError"></span>
+          </div>
+
+          <div class="ai-tip-banner">
+            <span class="ai-tip-badge">💡 Tip</span>
+            <span class="ai-tip-content">The AI will extract key definitions, formulas, and concepts into ready-to-test cards.</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="aiFlashcardModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="generateCardsSubmitBtn">Generate Flashcards</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD / EDIT FLASHCARD MANUALLY -->
+  <div class="modal-backdrop" id="flashcardModal" role="dialog" aria-modal="true" aria-labelledby="flashcardModalTitle">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-title" id="flashcardModalTitle">Add Flashcard</h3>
+        <button class="icon-btn modal-close-btn" data-close-modal="flashcardModal" aria-label="Close modal">&times;</button>
+      </div>
+      <form id="flashcardForm" novalidate>
+        <input type="hidden" id="fcEditId">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="fcSubjectSelect" class="form-label">Subject</label>
+            <select id="fcSubjectSelect" class="form-select">
+              <option value="">General</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="fcFrontInput" class="form-label required">Front (Question / Term / Formula)</label>
+            <textarea id="fcFrontInput" class="form-textarea" rows="2" placeholder="e.g. What is the time complexity of QuickSort average case?" required></textarea>
+            <span class="field-error" id="fcFrontError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="fcBackInput" class="form-label required">Back (Answer / Definition / Derivation)</label>
+            <textarea id="fcBackInput" class="form-textarea" rows="4" placeholder="e.g. O(n log n). It divides the array around a chosen pivot element." required></textarea>
+            <span class="field-error" id="fcBackError"></span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-close-modal="flashcardModal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveFlashcardSubmitBtn">Save Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toastContainer" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- SCRIPTS -->
+  <script src="js/state.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
